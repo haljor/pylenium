@@ -15,7 +15,8 @@ def main():
     browser.get('http://localhost:3000/users')
 
     # Do something
-    assert 0 == 0
+    link = browser.find_element_by_xpath('//a[text()="New User"]')
+    assert link is not None  # Never gets here if xpath fails
 
     # Teardown
     browser.quit()
