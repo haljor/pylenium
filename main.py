@@ -1,25 +1,26 @@
-"""
-Sample script for selenium webdriver against demo app
-"""
-
-# import pytest -- not required; installed at OS
-
+import unittest
 from selenium import webdriver
+import page
 
 
-def main():
-    """CLI"""
+class PythonOrgSearch(unittest.TestCase):
+    """A sample test class"""
 
-    # Initialize
-    browser = webdriver.Firefox()
-    browser.get('http://localhost:3000/users')
+    def setUp(self):
+        self.driver = webdriver.Firefox()
+        self.driver.get('http://www.python.org')
 
-    # Do something
-    link = browser.find_element_by_xpath('//a[text()="New User"]')
-    assert link is not None  # Never gets here if xpath fails
+    def test_search_in_python_org(self):
+        main_page = page.MainPage(self.driver)
+        assert main_page.is_title_matches(), 'python.org title does not match'
+        
+        main_page.search_text_element = 'pycon'
+        main_page.click_go_button()
+        search_results_page = page.SearchResultsPage(self.driver)
+        assert search_results_page.is_results_found(), 'No results found.'
 
-    # Teardown
-    browser.quit()
+    def tearDown(self):
+        self.driver.close()
 
 if __name__ == '__main__':
-    main()
+    unittest.main()
